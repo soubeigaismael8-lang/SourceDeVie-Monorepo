@@ -1,0 +1,42 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to Staging
+        if: github.ref == 'refs/heads/staging'
+        run: echo "🚀 Déploiement staging (à compléter avec ton hébergeur)"
+
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main'
+        run: echo "🚀 Déploiement production (à compléter avec ton hébergeur)"
